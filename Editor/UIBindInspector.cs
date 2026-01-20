@@ -55,7 +55,7 @@ namespace Koto.UIAutoBind.EditorTool
 
         void DrawBindingsPreview(UIBindBehaviour ui)
         {
-            var binds = ui.GetComponentsInChildren<UIBindMarker>(true);
+            var binds = UIBindResolver.GetBinds(ui);
             if (binds == null || binds.Length == 0) return;
 
             EditorGUILayout.LabelField("自动绑定预览", EditorStyles.boldLabel);
@@ -95,7 +95,6 @@ namespace Koto.UIAutoBind.EditorTool
             var subUIs = ui.GetComponentsInChildren<UIBindBehaviour>(true)
                            .Where(x => x != ui)
                            .ToArray();
-
             if (subUIs.Length == 0)
                 return;
 

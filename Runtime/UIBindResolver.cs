@@ -53,6 +53,14 @@ namespace Koto.UIAutoBind
                 .Distinct()
                 .ToArray();
         }
+
+        public static UIBindMarker[] GetBinds(UIBindBehaviour ui)
+        {
+            return ui.GetComponentsInChildren<UIBindMarker>(true)
+                .Where(b => b.GetComponentInParent<UIBindBehaviour>() == ui)
+                .OrderBy(b => b.Index)
+                .ToArray();
+        }
         public static HashSet<UIBindBehaviour> CollectReferencedUIs(UIBindBehaviour ui)
         {
             var result = new HashSet<UIBindBehaviour>();
