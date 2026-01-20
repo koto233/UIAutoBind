@@ -1,7 +1,7 @@
 {
-  "name": "com.koto.uiframework",
-  "displayName": "UIFramework",
-  "version": "0.1.1",
+  "name": "com.koto.uiautobind",
+  "displayName": "UI 自动绑定",
+  "version": "0.1.2",
   "unity": "2022.3",
-  "description": "UI\u6846\u67b6"
+  "description": "UI 自动绑定工具"
 }

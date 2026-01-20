@@ -40,7 +40,7 @@ namespace Koto.UIAutoBind.EditorTool
             EditorGUILayout.Space();
 
             // 2️⃣ 其余正常字段（排除自动生成字段和 m_Script）
-            DrawPropertiesExcluding(serializedObject, new string[] { "m_Script", "_generatedScriptPath" });
+            DrawPropertiesExcluding(serializedObject, new string[] { "_generatedScriptPath" });
 
             serializedObject.ApplyModifiedProperties();
 
