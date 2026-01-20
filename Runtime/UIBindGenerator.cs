@@ -12,21 +12,16 @@ namespace Koto.UIAutoBind
         {
             if (ui == null) return;
 
-            var binds = ui.GetComponentsInChildren<UIBindMarker>(true);
+          var binds = UIBindResolver.GetBinds(ui);
 
-            // Hierarchy 顺序稳定排序（深度优先）
-            var ordered = binds
-                .OrderBy(b => GetHierarchyPath(b.transform))
-                .ToArray();
-
-            for (int i = 0; i < ordered.Length; i++)
+            for (int i = 0; i < binds.Length; i++)
             {
-                Undo.RecordObject(ordered[i], "Assign UIBind Index");
-                ordered[i].Editor_SetIndex(i);
-                EditorUtility.SetDirty(ordered[i]);
+                Undo.RecordObject(binds[i], "Assign UIBind Index");
+                binds[i].Editor_SetIndex(i);
+                EditorUtility.SetDirty(binds[i]);
             }
 
-            GeneratePartial(ui, ordered);
+            GeneratePartial(ui, binds);
         }
 
         static void GeneratePartial(UIBindBehaviour ui, UIBindMarker[] binds)

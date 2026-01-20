@@ -23,9 +23,7 @@ namespace Koto.UIAutoBind
 
         void CacheBinds()
         {
-            _binds = GetComponentsInChildren<UIBindMarker>(true)
-            .OrderBy(b => b.Index)
-            .ToArray();
+            _binds = UIBindResolver.GetBinds(this);
         }
 
         protected T GetBind<T>(int index) where T : Component
