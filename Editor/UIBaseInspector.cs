@@ -3,8 +3,8 @@ using UnityEditor;
 using System.Linq;
 namespace Koto.UIAutoBind.EditorTool
 {
-    [CustomEditor(typeof(UIBase), true)]
-    public class UIBaseInspector : Editor
+    [CustomEditor(typeof(UIBindBehaviour), true)]
+    public class UIBindInspector : Editor
     {
         SerializedProperty _pathProp;
         private Vector2 _bindPreviewScroll;
@@ -31,7 +31,7 @@ namespace Koto.UIAutoBind.EditorTool
 
             EditorGUILayout.Space(10);
 
-            var ui = target as UIBase;
+            var ui = target as UIBindBehaviour;
             if (ui == null) return;
 
             // 1️⃣ 自动生成绑定预览
@@ -49,13 +49,13 @@ namespace Koto.UIAutoBind.EditorTool
 
             if (GUILayout.Button("🔧 生成 UI 绑定代码"))
             {
-                UIAutoBindGenerator.Generate(ui);
+                UIBindGenerator.Generate(ui);
             }
         }
 
-        void DrawBindingsPreview(UIBase ui)
+        void DrawBindingsPreview(UIBindBehaviour ui)
         {
-            var binds = ui.GetComponentsInChildren<UIBind>(true);
+            var binds = ui.GetComponentsInChildren<UIBindMarker>(true);
             if (binds == null || binds.Length == 0) return;
 
             EditorGUILayout.LabelField("自动绑定预览", EditorStyles.boldLabel);
@@ -90,16 +90,16 @@ namespace Koto.UIAutoBind.EditorTool
 
             EditorGUILayout.EndVertical();
         }
-        void DrawSubUIPreview(UIBase ui)
+        void DrawSubUIPreview(UIBindBehaviour ui)
         {
-            var subUIs = ui.GetComponentsInChildren<UIBase>(true)
+            var subUIs = ui.GetComponentsInChildren<UIBindBehaviour>(true)
                            .Where(x => x != ui)
                            .ToArray();
 
             if (subUIs.Length == 0)
                 return;
 
-            var referenced = UIBindAutoResolver.CollectReferencedUIs(ui);
+            var referenced = UIBindResolver.CollectReferencedUIs(ui);
 
             EditorGUILayout.Space(8);
             EditorGUILayout.LabelField("子 UI 模块预览", EditorStyles.boldLabel);
@@ -120,7 +120,7 @@ namespace Koto.UIAutoBind.EditorTool
                 EditorGUILayout.BeginHorizontal();
 
                 EditorGUILayout.LabelField(sub.GetType().Name, GUILayout.Width(160));
-                EditorGUILayout.ObjectField(sub, typeof(UIBase), true);
+                EditorGUILayout.ObjectField(sub, typeof(UIBindBehaviour), true);
 
                 if (GUILayout.Button("查看", GUILayout.Width(40)))
                 {

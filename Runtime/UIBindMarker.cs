@@ -1,7 +1,7 @@
 using UnityEngine;
 namespace Koto.UIAutoBind
 {
-    public class UIBind : MonoBehaviour
+    public class UIBindMarker : MonoBehaviour
     {
         [SerializeField] private int index;
 

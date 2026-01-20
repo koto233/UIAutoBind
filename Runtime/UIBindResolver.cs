@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Reflection;
 namespace Koto.UIAutoBind
 {
-    public static class UIBindAutoResolver
+    public static class UIBindResolver
     {
         // 常见 UI 组件优先级
         static readonly Type[] PreferredTypes =
@@ -20,7 +20,7 @@ namespace Koto.UIAutoBind
         typeof(Dropdown),
     };
 
-        public static Component Resolve(UIBind bind)
+        public static Component Resolve(UIBindMarker bind)
         {
             // 1️⃣ 手动指定永远最高优先级
             if (bind.Target != null)
@@ -39,7 +39,7 @@ namespace Koto.UIAutoBind
                 .FirstOrDefault(c =>
                     !(c is Transform) &&
                     !(c is CanvasRenderer) &&
-                    !(c is UIBind));
+                    !(c is UIBindMarker));
         }
 
         public static Type[] GetCandidateTypes(GameObject go)
@@ -48,14 +48,14 @@ namespace Koto.UIAutoBind
                 .Where(c =>
                     !(c is Transform) &&
                     !(c is CanvasRenderer) &&
-                    !(c is UIBind))
+                    !(c is UIBindMarker))
                 .Select(c => c.GetType())
                 .Distinct()
                 .ToArray();
         }
-        public static HashSet<UIBase> CollectReferencedUIs(UIBase ui)
+        public static HashSet<UIBindBehaviour> CollectReferencedUIs(UIBindBehaviour ui)
         {
-            var result = new HashSet<UIBase>();
+            var result = new HashSet<UIBindBehaviour>();
             if (ui == null)
                 return result;
 
@@ -71,10 +71,10 @@ namespace Koto.UIAutoBind
             foreach (var field in fields)
             {
                 // 只关心 UIBase 或其子类
-                if (!typeof(UIBase).IsAssignableFrom(field.FieldType))
+                if (!typeof(UIBindBehaviour).IsAssignableFrom(field.FieldType))
                     continue;
 
-                var value = field.GetValue(ui) as UIBase;
+                var value = field.GetValue(ui) as UIBindBehaviour;
                 if (value == null)
                     continue;
 

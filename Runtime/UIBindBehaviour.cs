@@ -2,9 +2,9 @@ using System.Linq;
 using UnityEngine;
 namespace Koto.UIAutoBind
 {
-    public abstract class UIBase : MonoBehaviour
+    public abstract class UIBindBehaviour : MonoBehaviour
     {
-        private UIBind[] _binds;
+        private UIBindMarker[] _binds;
         [Header("自动绑定脚本路径")]
         private string _pathPrefix = "Assets/";
         [SerializeField]
@@ -23,7 +23,7 @@ namespace Koto.UIAutoBind
 
         void CacheBinds()
         {
-            _binds = GetComponentsInChildren<UIBind>(true)
+            _binds = GetComponentsInChildren<UIBindMarker>(true)
             .OrderBy(b => b.Index)
             .ToArray();
         }

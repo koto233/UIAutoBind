@@ -2,8 +2,8 @@ using UnityEditor;
 using UnityEngine;
 namespace Koto.UIAutoBind.EditorTool
 {
-    [CustomEditor(typeof(UIBind))]
-    public class UIBindInspector : Editor
+    [CustomEditor(typeof(UIBindMarker))]
+    public class UIBindMarkerInspector : Editor
     {
 
         SerializedProperty indexProp, targetProp, manualProp;
@@ -22,8 +22,8 @@ namespace Koto.UIAutoBind.EditorTool
 
             EditorGUILayout.PropertyField(manualProp, new GUIContent("手动指定组件"));
 
-            var bind = (UIBind)target;
-            var auto = UIBindAutoResolver.Resolve(bind);
+            var bind = (UIBindMarker)target;
+            var auto = UIBindResolver.Resolve(bind);
             using (new EditorGUI.DisabledScope(true))
                 EditorGUILayout.ObjectField("自动推断结果", auto, typeof(Component), true);
 
@@ -44,7 +44,7 @@ namespace Koto.UIAutoBind.EditorTool
 
             DrawStatus(bind);
         }
-        void DrawStatus(UIBind bind)
+        void DrawStatus(UIBindMarker bind)
         {
             Color bg = bind.Target == null ? new Color(1f, 0.4f, 0.4f) : new Color(0.6f, 1f, 0.6f); // 红色 / 绿色
             string msg = bind.Target == null ? "未绑定任何组件（运行时会报错）" : $"已绑定：{bind.Target.GetType().Name}";

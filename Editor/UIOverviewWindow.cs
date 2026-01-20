@@ -37,7 +37,7 @@ namespace Koto.UIAutoBind.EditorTool
                 if (prefab == null)
                     continue;
 
-                var ui = prefab.GetComponent<UIBase>();
+                var ui = prefab.GetComponent<UIBindBehaviour>();
                 if (ui == null)
                     continue;
 
