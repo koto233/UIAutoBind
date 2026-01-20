@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using System.Linq;
-namespace Koto.UIAutoBind.Editor
+namespace Koto.UIAutoBind.EditorTool
 {
     [CustomEditor(typeof(UIBase), true)]
     public class UIBaseInspector : Editor

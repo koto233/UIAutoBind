@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
-namespace Koto.UIAutoBind.Editor
+namespace Koto.UIAutoBind.EditorTool
 {
     public class UIOverviewWindow : EditorWindow
     {
