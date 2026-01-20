@@ -4,7 +4,7 @@ using System.Text;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
-namespace com.koto.UIFramework
+namespace Koto.UIAutoBind
 {
     public static class UIAutoBindGenerator
     {

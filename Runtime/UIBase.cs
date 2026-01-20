@@ -1,6 +1,6 @@
 using System.Linq;
 using UnityEngine;
-namespace com.koto.UIFramework
+namespace Koto.UIAutoBind
 {
     public abstract class UIBase : MonoBehaviour
     {

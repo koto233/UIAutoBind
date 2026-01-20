@@ -1,5 +1,5 @@
 {
-    "name": "koto.uiframework",
+    "name": "koto.uiautobind",
     "rootNamespace": "",
     "references": [],
     "includePlatforms": [],

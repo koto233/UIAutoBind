@@ -1,6 +1,6 @@
 using UnityEditor;
 using UnityEngine;
-namespace com.koto.UIFramework
+namespace Koto.UIAutoBind.Editor
 {
     [CustomEditor(typeof(UIBind))]
     public class UIBindInspector : Editor

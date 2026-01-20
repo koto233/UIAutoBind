@@ -1,5 +1,5 @@
 {
-    "name": "koto.uiframework.editor",
+    "name": "koto.uiautobind.editor",
     "rootNamespace": "",
     "references": [
         "GUID:f497b89fae2f1c540ba972dbcba28e25"

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using System.Linq;
-namespace com.koto.UIFramework
+namespace Koto.UIAutoBind.Editor
 {
     [CustomEditor(typeof(UIBase), true)]
     public class UIBaseInspector : Editor
@@ -74,19 +74,8 @@ namespace com.koto.UIFramework
                     GUI.color = new Color(0.8f, 1f, 0.8f); // 绿色表示绑定成功
 
                 EditorGUILayout.BeginHorizontal();
-                if (binds.Length > 5)
-                {
-                    _bindPreviewScroll = EditorGUILayout.BeginScrollView(
-                        _bindPreviewScroll,
-                        GUILayout.MaxHeight(200)
-                    );
-                }
-                else
-                {
-                    // 字段名显示
-                    EditorGUILayout.LabelField($"@_{bind.name}", GUILayout.Width(160));
-                }
-
+                // 字段名显示
+                EditorGUILayout.LabelField($"@_{bind.name}", GUILayout.Width(160));
 
                 // 类型/对象显示
                 EditorGUILayout.ObjectField(target, typeof(Component), true);
@@ -100,10 +89,6 @@ namespace com.koto.UIFramework
             }
 
             EditorGUILayout.EndVertical();
-            if (binds.Length > 5)
-            {
-                EditorGUILayout.EndScrollView();
-            }
         }
         void DrawSubUIPreview(UIBase ui)
         {

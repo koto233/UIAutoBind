@@ -1,5 +1,5 @@
 using UnityEngine;
-namespace com.koto.UIFramework
+namespace Koto.UIAutoBind
 {
     public class UIBind : MonoBehaviour
     {

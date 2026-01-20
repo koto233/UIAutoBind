@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
-namespace com.koto.UIFramework
+namespace Koto.UIAutoBind
 {
     public static class UIBindAutoResolver
     {
