@@ -66,15 +66,13 @@ namespace Koto.UIAutoBind
 #if UNITY_EDITOR
         public IEnumerable<(string name, Object value)> GetRuntimeBindPreview()
         {
-            const string Prefix = "_b";
-
             var fields = GetType().GetFields(
                 BindingFlags.Instance | BindingFlags.NonPublic
             );
 
             foreach (var f in fields)
             {
-                if (!f.Name.StartsWith(Prefix))
+                if (!System.Attribute.IsDefined(f, typeof(UIAutoBindAttribute)))
                     continue;
 
                 if (!typeof(Object).IsAssignableFrom(f.FieldType))
@@ -83,6 +81,7 @@ namespace Koto.UIAutoBind
                 yield return (f.Name, f.GetValue(this) as Object);
             }
         }
+
 #endif
     }
 }

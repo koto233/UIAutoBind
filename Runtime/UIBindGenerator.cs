@@ -63,15 +63,17 @@ namespace Koto.UIAutoBind
             // =====================
             // 字段声明
             // =====================
+
+            var usedNames = new HashSet<string>();
             for (int i = 0; i < binds.Length; i++)
             {
                 var bind = binds[i];
                 var comp = UIBindResolver.Resolve(bind);
                 if (comp == null) continue;
 
-                var fieldName = MakeFieldName(comp, bind);
+                var fieldName = MakeFieldName(comp, bind, usedNames);
                 var typeName = comp.GetType().Name;
-
+                sb.AppendLine("        [UIAutoBind]");
                 sb.AppendLine(
                     $"        private {typeName} {fieldName};"
                 );
@@ -85,13 +87,14 @@ namespace Koto.UIAutoBind
             // =====================
             // 赋值
             // =====================
+            usedNames.Clear();
             for (int i = 0; i < binds.Length; i++)
             {
                 var bind = binds[i];
                 var comp = UIBindResolver.Resolve(bind);
                 if (comp == null) continue;
 
-                var fieldName = MakeFieldName(comp, bind);
+                var fieldName = MakeFieldName(comp, bind, usedNames);
                 var typeName = comp.GetType().Name;
 
                 sb.AppendLine(
@@ -128,11 +131,51 @@ namespace Koto.UIAutoBind
         // =====================
         // 命名工具
         // =====================
+        public static string MakeFieldName(
+            Component comp,
+            UIBindMarker bind,
+            HashSet<string> existedNames
+        )
+        {
+            // 1️⃣ 最短优先：只用节点名
+            string baseName = MakeFieldBaseName(bind);
 
-        static string MakeFieldName(Component comp, UIBindMarker bind)
+            if (existedNames.Add(baseName))
+                return baseName;
+
+            // 2️⃣ 冲突：加类型
+            string typeAbbrev = GetTypeAbbrev(comp);
+            string withType = $"{baseName}_{typeAbbrev}";
+
+            if (existedNames.Add(withType))
+                return withType;
+
+            // 3️⃣ 仍冲突：加索引
+            int index = 1;
+            while (true)
+            {
+                string indexed = $"{withType}{index}";
+                if (existedNames.Add(indexed))
+                    return indexed;
+                index++;
+            }
+        }
+
+        /// <summary>
+        /// 生成基础字段名（不含类型）
+        /// </summary>
+        private static string MakeFieldBaseName(UIBindMarker bind)
         {
             var nodeName = MakeSafeFieldName(bind.name);
-            string typeAbbrev = comp.GetType().Name switch
+            return $"_{nodeName}";
+        }
+
+        /// <summary>
+        /// 类型缩写（仅在冲突时使用）
+        /// </summary>
+        private static string GetTypeAbbrev(Component comp)
+        {
+            return comp.GetType().Name switch
             {
                 "TextMeshProUGUI" => "TMPText",
                 "TMP_InputField" => "TMPInput",
@@ -143,9 +186,9 @@ namespace Koto.UIAutoBind
                 "VerticalLayoutGroup" => "VLG",
                 "HorizontalLayoutGroup" => "HLG",
                 "GridLayoutGroup" => "GLG",
+
                 _ => comp.GetType().Name
             };
-            return $"_b_{nodeName}_{typeAbbrev}";
         }
 
         static string MakeSafeFieldName(string name)
