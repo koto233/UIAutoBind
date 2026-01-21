@@ -66,7 +66,7 @@ namespace Koto.UIAutoBind
 #if UNITY_EDITOR
         public IEnumerable<(string name, Object value)> GetRuntimeBindPreview()
         {
-            const string Prefix = "_auto";
+            const string Prefix = "_b";
 
             var fields = GetType().GetFields(
                 BindingFlags.Instance | BindingFlags.NonPublic

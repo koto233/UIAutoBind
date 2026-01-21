@@ -12,7 +12,7 @@ namespace Koto.UIAutoBind
         {
             if (ui == null) return;
 
-          var binds = UIBindResolver.GetBinds(ui);
+            var binds = UIBindResolver.GetBinds(ui);
 
             for (int i = 0; i < binds.Length; i++)
             {
@@ -73,7 +73,7 @@ namespace Koto.UIAutoBind
                 var typeName = comp.GetType().Name;
 
                 sb.AppendLine(
-                    $"        private @{typeName} {fieldName};"
+                    $"        private {typeName} {fieldName};"
                 );
             }
 
@@ -95,7 +95,7 @@ namespace Koto.UIAutoBind
                 var typeName = comp.GetType().Name;
 
                 sb.AppendLine(
-                    $"            {fieldName} = GetBind<@{typeName}>({i});"
+                    $"            {fieldName} = GetBind<{typeName}>({i});"
                 );
             }
 
@@ -131,11 +131,21 @@ namespace Koto.UIAutoBind
 
         static string MakeFieldName(Component comp, UIBindMarker bind)
         {
-            var typeName = comp.GetType().Name;
             var nodeName = MakeSafeFieldName(bind.name);
-
-            // 使用 @ 提高区分度 & 安全性
-            return $"@_auto_{typeName}_{nodeName}";
+            string typeAbbrev = comp.GetType().Name switch
+            {
+                "TextMeshProUGUI" => "TMPText",
+                "TMP_InputField" => "TMPInput",
+                "TMP_Dropdown" => "TMPDrop",
+                "ContentSizeFitter" => "CSF",
+                "AspectRatioFitter" => "ARF",
+                "LayoutElement" => "LElm",
+                "VerticalLayoutGroup" => "VLG",
+                "HorizontalLayoutGroup" => "HLG",
+                "GridLayoutGroup" => "GLG",
+                _ => comp.GetType().Name
+            };
+            return $"_b_{nodeName}_{typeAbbrev}";
         }
 
         static string MakeSafeFieldName(string name)
@@ -153,18 +163,6 @@ namespace Koto.UIAutoBind
                     sb.Append('_');
             }
             return sb.ToString();
-        }
-
-        static string GetHierarchyPath(Transform t)
-        {
-            var parts = new List<string>();
-            while (t != null)
-            {
-                parts.Add($"{t.GetSiblingIndex():000}_{t.name}");
-                t = t.parent;
-            }
-            parts.Reverse();
-            return string.Join("/", parts);
         }
 
         static bool IsValidGeneratePath(string path, out string error)

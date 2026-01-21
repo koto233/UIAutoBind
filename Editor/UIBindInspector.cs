@@ -115,7 +115,7 @@ namespace Koto.UIAutoBind.EditorTool
 
                 EditorGUILayout.BeginHorizontal();
                 // 字段名显示
-                EditorGUILayout.LabelField($"@_{bind.name}", GUILayout.Width(160));
+                EditorGUILayout.LabelField($"{bind.name}", GUILayout.Width(160));
 
                 // 类型/对象显示
                 EditorGUILayout.ObjectField(target, typeof(Component), true);
