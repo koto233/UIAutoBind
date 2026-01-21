@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 namespace Koto.UIAutoBind
 {
@@ -61,5 +63,26 @@ namespace Koto.UIAutoBind
         /// Editor 生成的 partial 会 override
         /// </summary>
         protected virtual void GetUI() { }
+#if UNITY_EDITOR
+        public IEnumerable<(string name, Object value)> GetRuntimeBindPreview()
+        {
+            const string Prefix = "_auto";
+
+            var fields = GetType().GetFields(
+                BindingFlags.Instance | BindingFlags.NonPublic
+            );
+
+            foreach (var f in fields)
+            {
+                if (!f.Name.StartsWith(Prefix))
+                    continue;
+
+                if (!typeof(Object).IsAssignableFrom(f.FieldType))
+                    continue;
+
+                yield return (f.Name, f.GetValue(this) as Object);
+            }
+        }
+#endif
     }
 }

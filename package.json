@@ -1,7 +1,7 @@
 {
   "name": "com.koto.uiautobind",
   "displayName": "UI AutoBind",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "unity": "2022.3",
   "description": "UI \u81ea\u52a8\u7ed1\u5b9a\u5de5\u5177"
 }

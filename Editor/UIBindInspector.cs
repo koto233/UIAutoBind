@@ -34,8 +34,15 @@ namespace Koto.UIAutoBind.EditorTool
             var ui = target as UIBindBehaviour;
             if (ui == null) return;
 
-            // 1️⃣ 自动生成绑定预览
-            DrawBindingsPreview(ui);
+            if (Application.isPlaying)
+            {
+                DrawRuntimeBindPreview(ui);
+            }
+            else
+            {
+                // 1️⃣ 自动生成绑定预览
+                DrawEditorBindingsPreview(ui);
+            }
             DrawSubUIPreview(ui);
             EditorGUILayout.Space();
 
@@ -52,8 +59,41 @@ namespace Koto.UIAutoBind.EditorTool
                 UIBindGenerator.Generate(ui);
             }
         }
+        void DrawRuntimeBindPreview(UIBindBehaviour ui)
+        {
 
-        void DrawBindingsPreview(UIBindBehaviour ui)
+            EditorGUILayout.LabelField("运行期绑定预览（真实字段）", EditorStyles.boldLabel);
+
+            EditorGUILayout.BeginVertical("box");
+
+            foreach (var (name, value) in ui.GetRuntimeBindPreview())
+            {
+                Color old = GUI.color;
+                GUI.color = value == null
+                    ? new Color(1f, 0.6f, 0.6f)
+                    : new Color(0.7f, 1f, 0.7f);
+
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField(name, GUILayout.Width(160));
+                EditorGUILayout.ObjectField(value, typeof(Object), true);
+                // 快捷按钮，手动选目标（可选）
+                if (GUILayout.Button("查看", GUILayout.Width(40)))
+                {
+                    if (value is Component comp)
+                        Selection.activeObject = comp.gameObject;
+                    else if (value is GameObject go)
+                        Selection.activeObject = go;
+                    else
+                        Selection.activeObject = value;
+                }
+                EditorGUILayout.EndHorizontal();
+
+                GUI.color = old;
+            }
+
+            EditorGUILayout.EndVertical();
+        }
+        void DrawEditorBindingsPreview(UIBindBehaviour ui)
         {
             var binds = UIBindResolver.GetBinds(ui);
             if (binds == null || binds.Length == 0) return;
@@ -90,6 +130,8 @@ namespace Koto.UIAutoBind.EditorTool
 
             EditorGUILayout.EndVertical();
         }
+
+
         void DrawSubUIPreview(UIBindBehaviour ui)
         {
             var subUIs = ui.GetComponentsInChildren<UIBindBehaviour>(true)
@@ -98,8 +140,6 @@ namespace Koto.UIAutoBind.EditorTool
             if (subUIs.Length == 0)
                 return;
 
-            var referenced = UIBindResolver.CollectReferencedUIs(ui);
-
             EditorGUILayout.Space(8);
             EditorGUILayout.LabelField("子 UI 模块预览", EditorStyles.boldLabel);
 
@@ -107,14 +147,8 @@ namespace Koto.UIAutoBind.EditorTool
 
             foreach (var sub in subUIs)
             {
-                bool used = referenced.TryGetValue(sub, out var fieldName);
-                string label = used
-                              ? $"已引用 ({fieldName})"
-                              : "未引用!";
                 Color old = GUI.color;
-                GUI.color = used
-                    ? new Color(0.7f, 1f, 0.7f)
-                    : new Color(1f, 0.85f, 0.5f);
+                GUI.color = new Color(0.7f, 1f, 0.7f);
 
                 EditorGUILayout.BeginHorizontal();
 
@@ -125,8 +159,6 @@ namespace Koto.UIAutoBind.EditorTool
                 {
                     Selection.activeObject = sub.gameObject;
                 }
-
-                EditorGUILayout.LabelField(label, GUILayout.Width(120));
 
                 EditorGUILayout.EndHorizontal();
                 GUI.color = old;
