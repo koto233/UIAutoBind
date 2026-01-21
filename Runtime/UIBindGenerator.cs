@@ -72,10 +72,11 @@ namespace Koto.UIAutoBind
                 if (comp == null) continue;
 
                 var fieldName = MakeFieldName(comp, bind, usedNames);
+                fieldName = LowerFirst(fieldName);
                 var typeName = comp.GetType().Name;
                 sb.AppendLine("        [UIAutoBind]");
                 sb.AppendLine(
-                    $"        private {typeName} {fieldName};"
+                    $"        private {typeName} _{fieldName};"
                 );
             }
 
@@ -95,10 +96,11 @@ namespace Koto.UIAutoBind
                 if (comp == null) continue;
 
                 var fieldName = MakeFieldName(comp, bind, usedNames);
+                fieldName = LowerFirst(fieldName);
                 var typeName = comp.GetType().Name;
 
                 sb.AppendLine(
-                    $"            {fieldName} = GetBind<{typeName}>({i});"
+                    $"            _{fieldName} = GetBind<{typeName}>({i});"
                 );
             }
 
@@ -167,7 +169,7 @@ namespace Koto.UIAutoBind
         private static string MakeFieldBaseName(UIBindMarker bind)
         {
             var nodeName = MakeSafeFieldName(bind.name);
-            return $"_{nodeName}";
+            return $"{nodeName}";
         }
 
         /// <summary>
@@ -206,6 +208,16 @@ namespace Koto.UIAutoBind
                     sb.Append('_');
             }
             return sb.ToString();
+        }
+        static string LowerFirst(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                return name;
+
+            if (char.IsLower(name[0]))
+                return name;
+
+            return char.ToLowerInvariant(name[0]) + name.Substring(1);
         }
 
         static bool IsValidGeneratePath(string path, out string error)
